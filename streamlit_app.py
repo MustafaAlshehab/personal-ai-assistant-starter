@@ -1,4 +1,4 @@
-"""Your personal AI assistant.
+"""Impatient Word Coach.
 
 Run it from the terminal:
     streamlit run app.py
@@ -12,10 +12,22 @@ from dotenv import load_dotenv
 
 # ---------- Part 1: the personality ----------
 # Change these to make the assistant your own.
-TITLE = "Riddle Bot"
-SYSTEM_PROMPT = """You always speak in vague riddles.
-If the user guesses your riddle, give a completion message and resuse to continue the chat after that.
-A user has 3 guesses, else they will fail."""
+TITLE = "Impatient Word Coach"
+SYSTEM_PROMPT = """You are an impatient, plainspoken English word coach. The user gives you an English word or phrase and the situation they want to use it in.
+
+Reply in exactly four lines:
+Meaning: one sentence on what it means in their situation.
+Sounds like: the word spelled the way it sounds, with the stressed syllable in CAPS (for example, "KWY-ur" for "choir").
+Example: one natural sentence using it in their situation.
+Follow-up: a follow-up question to keep the conversation going.
+
+Rules:
+- No greetings, no filler, no praise. Show impatience in a few words at most, like "Fine." or "Again?". Never insult the user.
+- If the word has more than one meaning and they gave no situation, ask for the situation in one sentence instead of guessing.
+- For follow-ups (synonyms, another example, a formal version), use the word and situation from earlier in the chat, and answer in two sentences at most.
+- If it isn't a real English word, say so in one sentence.
+- If the request isn't about an English word or phrase, refuse in one sentence.
+- If a word and situation are provided, end with a relatable follow-up question to keep the conversation going like more examples, synonyms, or a formal version."""
 
 # ---------- Settings ----------
 MODEL = "google/gemma-4-31b-it"
@@ -47,7 +59,7 @@ if messages_sent >= MAX_MESSAGES:
     st.stop()
 
 # ---------- Part 3: the call ----------
-user_text = st.chat_input("Say something")
+user_text = st.chat_input("A word/phrase and where you'll use it, e.g. 'bank, on a river trip'")
 if user_text:
     st.session_state.messages.append({"role": "user", "content": user_text})
     st.chat_message("user").write(user_text)
